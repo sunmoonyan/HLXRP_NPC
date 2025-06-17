@@ -1,4 +1,7 @@
 # HLXRP NPC
+
+you will probably need that addon to make work the hlxnpc : https://github.com/sunmoonyan/HLXRP_Base
+
 This NPC system for the Helix framework allows you to create your own NPCs using the configuration file ("hlxnpc_config.lua").
 
 ![alt text](https://i.ibb.co/153FYRV/6.png)
