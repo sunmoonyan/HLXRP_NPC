@@ -1,9 +1,7 @@
 # HLXRP NPC
 This NPC system for the Helix framework allows you to create your own NPCs using the configuration file ("hlxnpc_config.lua").
 
-here is an exemple of a preset:
-
-
+here is an exemple of a preset
 ![alt text](https://i.ibb.co/84djtMMr/Screenshot-from-2025-06-18-00-49-18.png)
 
 Close_NPC_UI() to close the dialogue,
@@ -13,5 +11,4 @@ ply:IsNearNPC("npc") to check if the player is really near the npc (really impor
 
 and we use net to send the action to the server , the ixnpc_job_police is receive in the server part :
 
-
-![alt text](http://url/to/img.png)
+![alt text](https://i.ibb.co/VWjYHYYL/Screenshot-from-2025-06-18-00-50-53.png)
