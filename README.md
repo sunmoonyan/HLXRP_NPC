@@ -22,7 +22,7 @@ and we use net to send the action to the server , the ixnpc_job_police is receiv
 
 ![alt text](https://i.ibb.co/VWjYHYYL/Screenshot-from-2025-06-18-00-50-53.png)
 
-NEXT FEATURES FOR HLXNPC 1.1
+NEXT FEATURES FOR HLXRPNPC 1.1
 
 - New Npcs entity preset (talk,buy item,heal)
 - Add conditions to dialogue
