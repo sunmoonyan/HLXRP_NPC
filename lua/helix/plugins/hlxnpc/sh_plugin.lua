@@ -48,9 +48,14 @@ if SERVER then
             }
         end
         self:SetData(data)
+        HLXRP_PluginSaved("HLXNPC")
     end
 
+
+
+
     function PLUGIN:LoadData()
+        HLXRP_LoadingBar("HLXNPC")   
         for _, v in ipairs(self:GetData() or {}) do
         -----[Jobs]----
          if v.ent == "ix_npc" then
@@ -68,46 +73,13 @@ if SERVER then
             end
         end
        end
+
+        HLXRP_PluginLoaded("HLXNPC")
+
      end
 
--- Dégradé magenta foncé
-local colors = {
-    "\27[38;2;102;0;153m",  -- Dark Magenta
-    "\27[38;2;128;0;170m",
-    "\27[38;2;153;0;187m",
-    "\27[38;2;178;0;204m",
-    "\27[38;2;204;0;221m",
-    "\27[38;2;221;51;238m",
-    "\27[38;2;238;102;255m" -- Lighter magenta
-}
-local reset = "\27[0m"
-local total = #colors
 
-for i = 1, total do
-    local bar = ""
 
-    -- Crochet gauche (magenta foncé)
-    bar = bar .. colors[1] .. "["
-
-    -- Contenu de la barre en dégradé
-    for j = 1, total do
-        if j <= i then
-            bar = bar .. colors[j] .. "="
-        else
-            bar = bar .. colors[#colors] .. " "
-        end
-    end
-
-    -- Crochet droit (magenta clair)
-    bar = bar .. colors[#colors] .. "]"
-
-    -- Texte latéral (teinte moyenne)
-    bar = bar .. colors[4] .. " Loading HLXNPC by Sunshi..." .. reset
-
-    print(bar)
-end
-local green = "\27[38;2;102;204;102m"
-print(green .. "-------------[HLXNPC LOADED]------------" .. reset)
 
 
  

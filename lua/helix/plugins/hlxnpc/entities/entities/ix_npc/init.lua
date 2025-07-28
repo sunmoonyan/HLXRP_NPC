@@ -30,10 +30,13 @@ end
 
 function ENT:Use(Ply)
 
- net.Start("ix_npc")
- net.WriteString(self:GetNpc())
- net.WriteEntity(self)
- net.Send(Ply)
+Ply:InteractNPC(self:GetNpc())
+
+net.Start("ix_npc_focus")
+net.WriteVector(self:LocalToWorld(Vector(25, 10, 65)))
+net.WriteAngle(self:LocalToWorldAngles(Angle(10, 170, 0)))
+net.Send(Ply)
+
 end
 
 

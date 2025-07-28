@@ -1,157 +1,212 @@
 
 if SERVER then
     
- util.AddNetworkString("ixnpc_job_police")
- net.Receive("ixnpc_job_police", function(len,ply) 
-  if ply:IsNearNPC("police") then
-   ply:Transfer_Faction("police")
-  end
- end)
-
-
- util.AddNetworkString("ixnpc_gun_dealer")
- net.Receive("ixnpc_gun_dealer", function(len,ply) 
-  if ply:IsNearNPC("gundealer") then
-   ply:Give("weapon_357")
-  end
- end)
-
- util.AddNetworkString("ixnpc_idcard")
- net.Receive("ixnpc_idcard", function(len,ply) 
-  if ply:IsNearNPC("idcard") then
-    ply:Buy_IdCard(100)
-  end
- end)
-
-end
 
 
 HLXNPC  = 
 {
-
-   ["citizen"] = {
-        ["name"] = "Citizen",
+   ["example"] = { 
+        ["startdialogue"] = function(ply) if ply:GetActiveWeapon():GetClass() == "ix_cuffs" then return 1 else return 2 end end,
         ["dialogue"] = {
 
+
             [1] = {
-                ["text"] = "Hi, I'm a simple citizen who likes to talk for the sake of talking.",
+                ["text"] = "Hello %s, you have %d coins.", 
+                ["args"] = {function(ply) return ply:GetName() end, 42},
+                ["condition"] = function(ply) if ply:GetName() == "sunshi" then return true else return false end end,
                 ["buttons"] = {
                     [1] = {
-                        ["text"] = "don't talk to me",
-                        ["callback"] = function() Close_NPC_UI() end,
+                        ["text"] = "Yes %s.",
+                        ["args"] = {function(ply) return ply:GetName() end},
+                        ["condition"] = function(ply) if ply:GetName() == "sunshi" then return true else return false end end,
+                        ["callback"] = function(ply) ply:Ignite(30) end,
+                        ["closedialogue"] = true,
                     },
                     [2] = {
-                        ["text"] = "interesting",
-                        ["callback"] = function() Dialogue_NPC_UI(2) end,
+                        ["text"] = "No %s.",
+                        ["args"] = {function(ply) return ply:GetName() end},
+                        ["condition"] = function(ply) if ply:GetName() == "suck" then return true else return false end end,
+                        ["callback"] = function(ply) end,
+                        ["closedialogue"] = true,                        
+                    },
+                    [3] = {
+                        ["text"] = "Maybe %s.",
+                        ["args"] = {function(ply) return ply:GetName() end},
+                        ["condition"] = function(ply) if ply:GetName() == "sunshi" then return true else return false end end,
+                        ["callback"] = function(ply) ply:InteractNPC("example",2) end,
+                        ["closedialogue"] = false,                       
                     }
                 }
             },
 
-
             [2] = {
-                ["text"] = "Great, I have so much to tell!",
+                ["text"] = "NOOOOOOOOOOOOOOOOOOOOOOOOOO!",
+                ["args"] = {},
+                ["condition"] = function(ply) if ply:GetName() == "sunshi" then return true else return false end end,
                 ["buttons"] = {
                     [1] = {
-                        ["text"] = "no thanks",
-                        ["callback"] = function() Close_NPC_UI() end,
+                        ["text"] = "Yes %s.",
+                        ["args"] = {function(ply) return ply:GetName() end},
+                        ["condition"] = function(ply) if ply:GetName() == "sunshi" then return true else return false end end,
+                        ["callback"] = function(ply) end,
+                        ["closedialogue"] = true,
                     }
                 }
             }
 
 
         }
+
     },
 
-     ["police"] = {
-        ["name"] = "Policeman",
-        ["dialogue"] = {
 
-            [1] = {
-                ["text"] = "Do you want to become a police officer?",
-                ["buttons"] = {
-                    [2] = {
-                        ["text"] = "yes",
-                        ["callback"] = function()
 
-                           if CLIENT then 
-                              net.Start("ixnpc_job_police")
-                              net.SendToServer()
-                              Close_NPC_UI()
-                           end
 
-                         end,
-                    },
-                    [1] = {
-                        ["text"] = "no",
-                        ["callback"] = function() Close_NPC_UI() end,
-                        ["color"] = Color(189,65,65)
-                    }
-                }
+
+
+
+["example_1"] = {
+    ["startdialogue"] = 1, -- The starting dialogue ID is 1
+
+    ["dialogue"] = {
+        [1] = { -- Dialogue ID 1
+            ["text"] = "Hello how are you", -- The sentence spoken by the NPC
+            ["args"] = {}, -- Custom arguments that can be injected into the text
+            ["condition"] = function(ply) return true end, -- Condition to display this dialogue
+
+            ["buttons"] = {
+                [1] = { -- Button 1
+                    ["text"] = "No.", -- Text displayed on the button
+                    ["args"] = {}, -- Custom arguments for the button text
+                    ["condition"] = function(ply) return true end, -- Condition to show this button
+                    ["callback"] = function(ply) end, -- Function executed when the player selects this button
+                    ["closedialogue"] = true, -- Whether to close the dialogue after selecting this button
+                },
+
+                [2] = { -- Button 2
+                    ["text"] = "Yes.", -- Text displayed on the button
+                    ["args"] = {}, -- Custom arguments for the button text
+                    ["condition"] = function(ply) return true end, -- Condition to show this button
+                    ["callback"] = function(ply) end, -- Function executed when the player selects this button
+                    ["closedialogue"] = true, -- Whether to close the dialogue after selecting this button
+                },
             }
-
-        }
-    },
-
-     ["gundealer"] = {
-        ["name"] = "Gun Dealer",
-        ["dialogue"] = {
-
-            [1] = {
-                ["text"] = "Do you want a weapon?",
-                ["buttons"] = {
-                    [2] = {
-                        ["text"] = "yes",
-                        ["callback"] = function()
-
-                           if CLIENT then 
-                              net.Start("ixnpc_gun_dealer")
-                              net.SendToServer()
-                              Close_NPC_UI()
-                           end
-
-                         end,
-                    },
-                    [1] = {
-                        ["text"] = "no",
-                        ["callback"] = function() Close_NPC_UI() end,
-                        ["color"] = Color(189,65,65)
-                    }
-                }
-            }
-
-        }
-    },
-
-     ["idcard"] = {
-        ["name"] = "Id card",
-        ["dialogue"] = {
-
-            [1] = {
-                ["text"] = "Do you want a new idcard?",
-                ["buttons"] = {
-                    [2] = {
-                        ["text"] = "yes",
-                        ["callback"] = function()
-
-                           if CLIENT then 
-                              net.Start("ixnpc_idcard")
-                              net.SendToServer()
-                              Close_NPC_UI()
-                           end
-
-                         end,
-                    },
-                    [1] = {
-                        ["text"] = "no",
-                        ["callback"] = function() Close_NPC_UI() end,
-                        ["color"] = Color(189,65,65)
-                    }
-                }
-            }
-
-        }
+        },
     }
+},
+
+["example_2"] = {
+    ["startdialogue"] = 1,
+
+    ["dialogue"] = {
+        [1] = {
+            ["text"] = "Hello what is your name?",
+            ["args"] = {},
+            ["condition"] = function(ply) return true end,
+
+            ["buttons"] = {
+                [1] = {
+                    ["text"] = "I don't know.",
+                    ["args"] = {},
+                    ["condition"] = function(ply) return true end,
+                    ["callback"] = function(ply) end,
+                    ["closedialogue"] = true,
+                },
+
+                [2] = {
+                    ["text"] = "My name is %s.",
+                    ["args"] = {function(ply) return ply:GetName() end}, -- This argument provides the player's name to the text
+                    ["condition"] = function(ply) return true end,
+                    ["callback"] = function(ply) ply:InteractNPC("example_2", 2) end, -- Triggers the second dialogue when selected
+                    ["closedialogue"] = false,
+                },
+            }
+        },
+
+        [2] = {
+            ["text"] = "Nice to meet you %s.",
+            ["args"] = {function(ply) return ply:GetName() end},
+            ["condition"] = function(ply) return true end,
+
+            ["buttons"] = {
+                [1] = {
+                    ["text"] = "Thanks.",
+                    ["args"] = {},
+                    ["condition"] = function(ply) return true end,
+                    ["callback"] = function(ply) end,
+                    ["closedialogue"] = true,
+                },
+            }
+        },
+    }
+},
+
+["example_3"] = {
+    ["startdialogue"] = function(ply)
+        -- If the player has the police playermodel, start with dialogue ID 1; otherwise, start with ID 2
+        if ply:GetModel() == "models/police.mdl" then
+            return 1
+        else
+            return 2
+        end
+    end,
+
+    ["dialogue"] = {
+        [1] = {
+            ["text"] = "Hello are you a policeman %s?",
+            ["args"] = {function(ply) return ply:GetName() end},
+            ["condition"] = function(ply)
+                -- Only show this dialogue if the player is using the police playermodel
+                return ply:GetModel() == "models/police.mdl"
+            end,
+
+            ["buttons"] = {
+                [1] = {
+                    ["text"] = "No I'm not a policeman.",
+                    ["args"] = {},
+                    ["condition"] = function(ply) return true end,
+                    ["callback"] = function(ply) end,
+                    ["closedialogue"] = true,
+                },
+
+                [2] = {
+                    ["text"] = "Yes I am.",
+                    ["args"] = {}, -- No arguments needed for this button
+                    ["condition"] = function(ply) return ply:GetCharacter():IsPolice() end,
+                    ["callback"] = function(ply) ply:InteractNPC("example_3", 2) end, -- Starts dialogue ID 2 when selected
+                    ["closedialogue"] = false,
+                },
+            }
+        },
+
+        [2] = {
+            ["text"] = "Nice to meet you %s.",
+            ["args"] = {function(ply) return ply:GetName() end},
+            ["condition"] = function(ply) return true end,
+
+            ["buttons"] = {
+                [1] = {
+                    ["text"] = "Thanks.",
+                    ["args"] = {},
+                    ["condition"] = function(ply) return true end,
+                    ["callback"] = function(ply) end,
+                    ["closedialogue"] = true,
+                },
+            }
+        },
+    }
+},
+
+
+
+
+
+
+
+
 
 
 
 }
+
+end

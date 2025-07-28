@@ -1,5 +1,6 @@
-util.AddNetworkString("ix_npc")
-
+util.AddNetworkString("ix_npc_send")
+util.AddNetworkString("ix_npc_callback")
+util.AddNetworkString("ix_npc_focus")
 
 local player = FindMetaTable("Player")
 
@@ -13,34 +14,75 @@ local player = FindMetaTable("Player")
       end
    end
 
-   function player:Transfer_Faction(faction)
-              if self:HasWhitelist(ix.faction.Get(faction)["index"]) then
-               self:GetCharacter():SetFaction(ix.faction.Get(faction)["index"])
-              else
-               ix.util.Notify("you are not allowed to enter this profession", ply)
-              end
+   function player:InteractNPC(npc,dialogue)
+      if dialogue then
+      self:SendNPCDialogue(dialogue,npc,campos,camang)
+      else
+         if isfunction(HLXNPC[npc]["startdialogue"]) then
+         self:SendNPCDialogue(HLXNPC[npc]["startdialogue"](self),npc,campos,camang)      
+         else
+         self:SendNPCDialogue(HLXNPC[npc]["startdialogue"],npc,campos,camang)   
+         end
+      end
    end
 
-  function player:Buy_IdCard(price)
-    local Char = self:GetCharacter()
-    local Inv = self:GetCharacter():GetInventory()
+   function player:SendNPCDialogue(dialogue,npc)
+     local FDialogue = ""
+     local FArgs = {}
+     local FArgsButton = {}
+     local FButton = {}
 
-         if Char:GetMoney() >= price then 
-          
-            if Inv:HasItem("idcard") == false  then
-               Inv:Add("idcard", 1, {
-                name = Char:GetName(),
-                id = Char:GetData("id")
-               })
-               Char:SetMoney(Char:GetMoney()-price)
-               ix.util.Notify("you have received a new identity card", self)
-            else
-               ix.util.Notify("you already have an identity card", self)
-            end
-         else
-               ix.util.Notify("you don't have enough money", self)
-         end
+     if HLXNPC[npc]["dialogue"][dialogue]["condition"](self) then else return end
+
+     for i,v in ipairs(HLXNPC[npc]["dialogue"][dialogue]["args"]) do
+
+        if isfunction(v) then
+        FArgs[i] = v(self)
+        else
+        FArgs[i] = v
+        end
+     end
      
-  end
+     for i,v in ipairs(HLXNPC[npc]["dialogue"][dialogue]["buttons"]) do
+        if isfunction(v["condition"]) then
+          if  v["condition"](self) then  
+            FArgsButton[i] = {}
 
+            for n,m in ipairs(v["args"]) do
+               FArgsButton[i][n] = {}
+               if isfunction(m) then
+              FArgsButton[i][n] = m(self)
+              else
+              FArgsButton[i][n] = m
+              end
+            end
+   
+          FButton[i] = {string.format(v["text"], unpack( FArgsButton[i] ) ), v["closedialogue"] }
+          end
+        end
 
+     end
+
+     FDialogue = string.format(HLXNPC[npc]["dialogue"][dialogue]["text"], unpack( FArgs ) )  
+
+     net.Start("ix_npc_send") --Nom
+     net.WriteString(npc) --npc
+     net.WriteInt(dialogue, 6)
+     net.WriteString(FDialogue) --Dialogue
+     net.WriteTable(FButton) --Buttons
+     net.Send(self)
+
+   end
+
+   net.Receive("ix_npc_callback", function(len,ply) 
+   local npc = net.ReadString()
+   local dialogue = net.ReadInt(6)
+   local button = net.ReadInt(4)
+
+   if ply:IsNearNPC(npc) && HLXNPC[npc]["dialogue"][dialogue]["buttons"][button]["condition"](ply) then
+   
+     HLXNPC[npc]["dialogue"][dialogue]["buttons"][button]["callback"](ply)
+
+   end
+
+   end)
