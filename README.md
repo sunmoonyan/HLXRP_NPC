@@ -11,20 +11,46 @@ This NPC system for the Helix framework allows you to create your own NPCs using
 
 here is an exemple of a preset
 
-![alt text](https://i.ibb.co/84djtMMr/Screenshot-from-2025-06-18-00-49-18.png)
+```
+["example_1"] = {
+    ["startdialogue"] = 1, -- The starting dialogue ID is 1
+
+    ["dialogue"] = {
+        [1] = { -- Dialogue ID 1
+            ["text"] = "Hello how are you", -- The sentence spoken by the NPC
+            ["args"] = {}, -- Custom arguments that can be injected into the text
+            ["condition"] = function(ply) return true end, -- Condition to display this dialogue
+
+            ["buttons"] = {
+                [1] = { -- Button 1
+                    ["text"] = "No.", -- Text displayed on the button
+                    ["args"] = {}, -- Custom arguments for the button text
+                    ["condition"] = function(ply) return true end, -- Condition to show this button
+                    ["callback"] = function(ply) end, -- Function executed when the player selects this button
+                    ["closedialogue"] = true, -- Whether to close the dialogue after selecting this button
+                },
+
+                [2] = { -- Button 2
+                    ["text"] = "Yes.", -- Text displayed on the button
+                    ["args"] = {}, -- Custom arguments for the button text
+                    ["condition"] = function(ply) return true end, -- Condition to show this button
+                    ["callback"] = function(ply) end, -- Function executed when the player selects this button
+                    ["closedialogue"] = true, -- Whether to close the dialogue after selecting this button
+                },
+            }
+        },
+    }
+},
+```
 
 
-- Close_NPC_UI() to close the dialogue,
-- Dialogue_NPC_UI() to choose the next dialogue of the npc
-- ply:Transfer_Faction() to transfer the faction/job of the player
+- player:InteractNPC(npc,dialogue) npc is the preset and dialogue is the optional choosen dialogue , 
 - ply:IsNearNPC("npc") to check if the player is really near the npc (really important for security issue)
+  
 
 and we use net to send the action to the server , the ixnpc_job_police is receive in the server part :
 
 
 ![alt text](https://i.ibb.co/VWjYHYYL/Screenshot-from-2025-06-18-00-50-53.png)
 
-NEXT FEATURES FOR HLXRPNPC 1.1
 
-- New Npcs entity preset (talk,buy item,heal)
-- Add conditions to dialogue
